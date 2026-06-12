@@ -31,6 +31,9 @@
     activeTab = tab
   }
 
+  const dataActionBtnClass =
+    'regular-btn focus-visible-ring h-10 !min-w-fit !px-4 !py-0 !text-sm'
+
   const downloadFile = (content: string, filename: string, mime: string) => {
     const blob = new Blob([content], { type: mime })
     const url = URL.createObjectURL(blob)
@@ -441,14 +444,14 @@
               <div class="flex flex-wrap gap-4">
                 <button
                   type="button"
-                  class="regular-btn"
+                  class={dataActionBtnClass}
                   disabled={isExporting}
                   on:click={handleExportJson}>
                   {$_('backup.exportJson')}
                 </button>
                 <button
                   type="button"
-                  class="regular-btn"
+                  class={dataActionBtnClass}
                   disabled={isExporting}
                   on:click={handleExportCsv}>
                   {$_('backup.exportCsv')}
@@ -465,7 +468,7 @@
               <p class="text-warn mb-4 text-sm">{$_('backup.importTip')}</p>
               <button
                 type="button"
-                class="regular-btn"
+                class={dataActionBtnClass}
                 disabled={isImporting}
                 on:click={handleImportClick}>
                 {isImporting ? $_('backup.importing') : $_('backup.importData')}

@@ -3,6 +3,7 @@ import { Record } from '../models/records'
 import { Insight } from '../models/insights'
 import { Goal } from '../models/goals'
 import CustomCurrency from '../models/customCurrency'
+import { normalizeGoalInput } from '../helper/goals'
 
 const BACKUP_APP_NAME = 'wealth-tracker'
 const BACKUP_VERSION = 1
@@ -134,26 +135,31 @@ export const importData = async (request, reply) => {
     }
 
     if (Array.isArray(data.goals)) {
-      const existing = await Goal.findAll({ raw: true })
-      const existingKeys = new Set(existing.map((item: any) => `${item.name}|${item.amount}`))
       const newGoals = data.goals
-        .filter((item: any) => item?.name && Number(item?.amount) > 0)
-        .filter((item: any) => {
-          const key = `${item.name}|${item.amount}`
-          if (existingKeys.has(key)) return false
-          existingKeys.add(key)
-          return true
+        .map((item: any) => {
+          const normalized = normalizeGoalInput({
+            name: item?.name,
+            amount: item?.amount,
+            deadline: item?.deadline,
+          })
+          if (!normalized.ok) return null
+          return {
+            name: normalized.value.name,
+            amount: normalized.value.amount,
+            currency: item.currency || 'CNY',
+            deadline: normalized.value.deadline,
+            achievedAt: item.achievedAt || null,
+            created: item.created || new Date(),
+            updated: new Date(),
+          }
         })
-        .map((item: any) => ({
-          name: item.name,
-          amount: item.amount,
-          currency: item.currency || 'CNY',
-          deadline: item.deadline || null,
-          achievedAt: item.achievedAt || null,
-          created: item.created || new Date(),
-          updated: new Date(),
-        }))
-      await Goal.bulkCreate(newGoals)
+        .filter(Boolean)
+
+      // Replace goals entirely so stale or corrupted rows do not linger after import.
+      await Goal.destroy({ where: {} })
+      if (newGoals.length > 0) {
+        await Goal.bulkCreate(newGoals)
+      }
       counts.goals = newGoals.length
     }
 
