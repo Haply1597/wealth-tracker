@@ -11,7 +11,7 @@ COPY server/package.json ./server/package.json
 
 # --ignore-scripts 跳过 bcrypt/sqlite3/electron 等原生模块编译；
 # builder 阶段只需 tsc + vite，不需要这些二进制，原生模块留给运行时阶段（bun install）处理
-RUN yarn install --ignore-scripts --frozen-lockfile=false
+RUN yarn install --ignore-scripts
 
 # 拷源码并构建：
 #   yarn build = yarn build:client (vite → ../server/public) + yarn build:server (tsc → server/dist)
