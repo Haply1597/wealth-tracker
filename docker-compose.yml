@@ -8,6 +8,10 @@ services:
       - '8888:8888'
     volumes:
       - ./data:/app/data
+    environment:
+      - ALLOW_PASSWORD=true
+      # 会话有效时长（分钟）：登录后多久需要重新输入密码，默认 15
+      - SESSION_TTL_MINUTES=15
     restart: unless-stopped
 
 volumes:

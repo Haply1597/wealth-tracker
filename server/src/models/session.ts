@@ -1,6 +1,7 @@
 import { DataTypes, Model, Op } from 'sequelize'
 import { sequelize } from './index'
 import crypto from 'crypto'
+import { getSessionTtlMinutes } from '../helper/constant'
 
 class Session extends Model {
   declare id: string
@@ -27,7 +28,7 @@ Session.init(
 export const createSession = async (): Promise<string> => {
   const sessionId = crypto.randomBytes(32).toString('hex')
   const expiresAt = new Date()
-  expiresAt.setMinutes(expiresAt.getMinutes() + 15) // 15 分钟有效期
+  expiresAt.setMinutes(expiresAt.getMinutes() + getSessionTtlMinutes())
 
   await Session.create({
     id: sessionId,

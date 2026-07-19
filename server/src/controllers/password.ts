@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import Password, { hash, verify } from '../models/password'
 import { createSession, validateSession } from '../models/session'
-import { parseBooleanEnv } from '../helper/constant'
+import { parseBooleanEnv, getSessionTtlMinutes } from '../helper/constant'
 
 /**
  * Detect whether the incoming request was made over HTTPS,
@@ -24,7 +24,8 @@ const buildSessionCookieOptions = (request: FastifyRequest) => {
     secure,
     sameSite: 'strict' as const,
     path: '/',
-    maxAge: 15 * 60, // 15 minutes
+    // 会话时长由 SESSION_TTL_MINUTES 控制（默认 15 分钟），与 session 过期时间保持一致
+    maxAge: getSessionTtlMinutes() * 60,
   }
 }
 
