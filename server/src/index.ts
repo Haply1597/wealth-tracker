@@ -91,7 +91,7 @@ const setupStaticFiles = (app: FastifyInstance, publicDir: string) => {
     prefix: '/',
   })
 
-  // 飞牛统一网关不剥 gatewayPrefix，把 /app/wealth-tracker 整段原样转发给后端，
+  // 飞牛统一网关不剥 gatewayPrefix，把 /app/wealth-tracker/* 整段转发给后端，
   // 而 client vite 用 base='/app/wealth-tracker/' 产出绝对前缀的资源引用。
   // 注册第二个 static 实例服务该前缀，让 /app/wealth-tracker/assets/x.js 能命中文件。
   app.register(fastifyStatic, {
@@ -151,7 +151,20 @@ export const createApp = async (options: ServerRuntimeOptions = {}) => {
 
     await connectToSqlite()
     await registerPlugins(app)
+    // 注册原始路由（TCP 直连模式用，/api/*）
     routes.forEach((route: any) => app.route(route))
+
+    // 飞牛统一网关不剥 gatewayPrefix，把 /app/wealth-tracker/api/* 整段转发给后端。
+    // fastify 4 路由解析在 onRequest 之前，运行时无法改 URL 影响路由匹配，
+    // 只能在注册时把所有 API 路由再以 /app/wealth-tracker 为前缀注册一遍。
+    app.register(
+      function (apiApp, _opts, done) {
+        routes.forEach((route: any) => apiApp.route(route))
+        done()
+      },
+      { prefix: '/app/wealth-tracker' }
+    )
+
     setupStaticFiles(app, runtimeOptions.publicDir)
     setupNotFoundHandler(app, runtimeOptions.publicDir)
 

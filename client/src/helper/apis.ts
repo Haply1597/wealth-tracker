@@ -1,7 +1,12 @@
 import $ajax from './ajax'
 
+// vite 的 BASE_URL = base 配置（默认 '/'，飞牛网关模式下为 '/app/wealth-tracker/'）。
+// 飞牛网关只把 gatewayPrefix 下的请求转发给容器，所以 API 请求也要带这个前缀，
+// 否则飞牛会把 /api/* 当成系统自己的接口处理掉。
+const API_PREFIX = import.meta.env.BASE_URL.replace(/\/$/, '')
+
 const genApiPath = (path) => {
-  return `/api/${path}`
+  return `${API_PREFIX}/api/${path}`
 }
 
 export const createAssets = (data) => {
