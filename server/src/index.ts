@@ -163,11 +163,34 @@ export const startServer = async (options: ServerRuntimeOptions = {}) => {
   const runtimeOptions = getRuntimeOptions()
 
   if (!app.server.listening) {
-    serverAddress = await app.listen({
-      host: runtimeOptions.host,
-      port: runtimeOptions.port,
-    })
-    app.log.info(`server listening on ${serverAddress}`)
+    if (runtimeOptions.gatewaySocket) {
+      // 飞牛统一网关模式：监听 Unix Domain Socket。
+      // 1) 删除已存在的 socket 文件，否则 listen 会报 EADDRINUSE
+      // 2) 确保父目录存在
+      // 3) listen 后给 socket 文件 666 权限，让飞牛网关进程能读写
+      const socketPath = runtimeOptions.gatewaySocket
+      try {
+        await fs.unlink(socketPath)
+      } catch (err: any) {
+        if (err.code !== 'ENOENT') {
+          app.log.warn(`Failed to remove stale socket ${socketPath}: ${err.message}`)
+        }
+      }
+      await fs.mkdir(path.dirname(socketPath), { recursive: true })
+      serverAddress = await app.listen({ path: socketPath })
+      try {
+        await fs.chmod(socketPath, 0o666)
+      } catch (err: any) {
+        app.log.warn(`Failed to chmod socket ${socketPath}: ${err.message}`)
+      }
+      app.log.info(`server listening on unix socket ${serverAddress}`)
+    } else {
+      serverAddress = await app.listen({
+        host: runtimeOptions.host,
+        port: runtimeOptions.port,
+      })
+      app.log.info(`server listening on ${serverAddress}`)
+    }
   }
 
   return {

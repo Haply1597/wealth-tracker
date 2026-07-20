@@ -13,6 +13,7 @@ export interface ServerRuntimeOptions {
   dbPath?: string
   allowPassword?: boolean
   canBeReset?: boolean
+  gatewaySocket?: string
 }
 
 export interface ResolvedServerRuntimeOptions {
@@ -22,6 +23,7 @@ export interface ResolvedServerRuntimeOptions {
   dbPath: string
   allowPassword: boolean
   canBeReset: boolean
+  gatewaySocket: string
 }
 
 let runtimeOptions: ResolvedServerRuntimeOptions = {
@@ -31,6 +33,7 @@ let runtimeOptions: ResolvedServerRuntimeOptions = {
   dbPath: getSqliteDbPath(),
   allowPassword: parseBooleanEnv(process.env.ALLOW_PASSWORD, false),
   canBeReset: parseBooleanEnv(process.env.CAN_BE_RESET, false),
+  gatewaySocket: process.env.GATEWAY_SOCKET || '',
 }
 
 const setEnvValue = (key: string, value: string | number | boolean) => {
@@ -50,6 +53,7 @@ export const resolveRuntimeOptions = (
     allowPassword:
       options.allowPassword ?? parseBooleanEnv(process.env.ALLOW_PASSWORD, false),
     canBeReset: options.canBeReset ?? parseBooleanEnv(process.env.CAN_BE_RESET, false),
+    gatewaySocket: options.gatewaySocket || process.env.GATEWAY_SOCKET || '',
   }
 }
 
@@ -64,6 +68,7 @@ export const applyRuntimeOptions = (
   setEnvValue('SQLITE_DB_PATH', runtimeOptions.dbPath)
   setEnvValue('ALLOW_PASSWORD', runtimeOptions.allowPassword)
   setEnvValue('CAN_BE_RESET', runtimeOptions.canBeReset)
+  setEnvValue('GATEWAY_SOCKET', runtimeOptions.gatewaySocket)
 
   return runtimeOptions
 }
