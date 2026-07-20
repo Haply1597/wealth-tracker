@@ -88,7 +88,16 @@ const connectToSqlite = async () => {
 const setupStaticFiles = (app: FastifyInstance, publicDir: string) => {
   app.register(fastifyStatic, {
     root: publicDir,
-    prefix: '',
+    prefix: '/',
+  })
+
+  // 飞牛统一网关不剥 gatewayPrefix，把 /app/wealth-tracker 整段原样转发给后端，
+  // 而 client vite 用 base='/app/wealth-tracker/' 产出绝对前缀的资源引用。
+  // 注册第二个 static 实例服务该前缀，让 /app/wealth-tracker/assets/x.js 能命中文件。
+  app.register(fastifyStatic, {
+    root: publicDir,
+    prefix: '/app/wealth-tracker/',
+    decorateReply: false,
   })
 }
 
