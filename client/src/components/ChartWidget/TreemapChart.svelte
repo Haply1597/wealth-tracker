@@ -83,7 +83,7 @@
   <div class="mb-4 flex flex-row gap-3 sm:flex-row sm:items-start sm:justify-between">
     <Caption title={$_('assetStatus')} subtitle={$_('assetStatusInsights')}></Caption>
     <a
-      href="/"
+      href={`${import.meta.env.BASE_URL}`}
       class="regular-btn focus-visible-ring !min-w-fit self-start sm:shrink-0 sm:self-auto">
       {$_('backToHomepage')}
     </a>

@@ -123,7 +123,7 @@
 <Card size="xl" class="h-fit shadow-none md:p-4">
   <div class="mb-4 flex flex-row gap-3 sm:flex-row sm:items-start sm:justify-between">
     <Caption title={$_('assetAllocation')} subtitle={$_('currentAssetStatus')}></Caption>
-    <a href="/status" class="regular-btn focus-visible-ring flex max-h-10 !min-w-fit items-center">
+    <a href={`${import.meta.env.BASE_URL}status`} class="regular-btn focus-visible-ring flex max-h-10 !min-w-fit items-center">
       {$_('assetStatus')}
     </a>
   </div>

@@ -8,6 +8,9 @@
   import { saveUserSettings } from './../helper/settings'
   import { TITLE, DEFAULT_THEME, LANG_ARR } from './../helper/constant'
 
+  // 飞牛统一网关模式下 BASE_URL 为 /app/wealth-tracker/，绝对路径会跳出应用。
+  const baseUrl = import.meta.env.BASE_URL
+
   let lang: string = $language || 'zh-CN'
   let langName: string = ''
 
@@ -119,11 +122,11 @@
 <header class="flex h-20 items-center justify-between" style="z-index: 1000;">
   <h1 class="h-full leading-none">
     <a
-      href="/"
+      href={baseUrl}
       title={TITLE}
       class="flex h-full items-center space-x-2 focus-visible:outline-none"
       on:click={() => trackEvent('logo-click')}>
-      <img src="/logo.png" alt="Sink" class="h-5 w-5" />
+      <img src={`${baseUrl}logo.png`} alt="Sink" class="h-5 w-5" />
       <span class="title font-[cursive] text-xl font-semibold">{TITLE}</span>
     </a>
   </h1>

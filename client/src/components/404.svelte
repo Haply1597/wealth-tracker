@@ -4,6 +4,8 @@
 
   export const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay || 1000))
 
+  // 飞牛统一网关模式下 BASE_URL 为 /app/wealth-tracker/，跳转到根路径会离开应用进入飞牛系统。
+  const baseUrl = import.meta.env.BASE_URL
   let counter = 10
 
   onMount(async () => {
@@ -12,14 +14,14 @@
       counter -= 1
     }
     await sleep(1000)
-    location.href = '/'
+    location.href = baseUrl
   })
 </script>
 
 <div
   class="mt-4 flex w-full flex-row flex-wrap items-center justify-between overflow-x-hidden px-4 pt-[64px]">
   <div class="m-auto text-center">
-    <img class="w-full max-w-md" src="/404.webp" alt="404 Not Found" />
+    <img class="w-full max-w-md" src={`${baseUrl}404.webp`} alt="404 Not Found" />
     <h1 class="text-2xl font-bold text-black">Sorry, the page was not found.</h1>
     <p class="mt-3 text-gray-600">
       Click below to return to Home page or go to the Github Repository We will auto-redirect in <i
@@ -31,7 +33,7 @@
     <div class="mt-3 flex flex-row items-center justify-center space-x-3">
       <a
         class="border-brand text-brand min-w-28 rounded-full border bg-white px-4 py-2 text-base font-bold hover:bg-gray-100 md:text-sm"
-        href="/">
+        href={baseUrl}>
         {$_('backToHomepage')}
       </a>
       <a

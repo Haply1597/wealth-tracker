@@ -228,7 +228,7 @@ export const genAdviceWithStream = (params, options) => {
   }
   controller.signal.onabort = finish
 
-  fetchEventSource('/api/generate-advice', {
+  fetchEventSource(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/api/generate-advice`, {
     method: 'POST',
 
     headers: {

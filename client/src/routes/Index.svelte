@@ -262,7 +262,7 @@
       {$_('getAIAdviceDescription')}
     </h2>
     <a
-      href="/advice"
+      href={`${import.meta.env.BASE_URL}advice`}
       class="regular-btn hover:text-brand inline-block text-center text-base"
       on:click={() => trackEvent('get-ai-advice-click')}>
       {$_('getAIAdvice')}

@@ -118,7 +118,7 @@
       <strong class="operating-text">{$_('addition')}</strong>
     </button>
     <a
-      href="/insights"
+      href={`${import.meta.env.BASE_URL}insights`}
       class="hover:text-brand focus-visible-ring space-x-2 rounded-full border border-gray-300 px-4 py-2 text-black hover:bg-gray-100">
       <SvgIcon name="edit" />
       <strong class="operating-text">{$_('insightsNav')}</strong>

@@ -40,7 +40,7 @@
 <Card size="xl" class="w-full max-w-none shadow-none md:p-4 2xl:col-span-2">
   <div class="mb-4 flex flex-row gap-3 sm:flex-row sm:items-start sm:justify-between">
     <Caption title={$_('recordDetails')}></Caption>
-    <a href="/" class="regular-btn focus-visible-ring !min-w-fit">
+    <a href={`${import.meta.env.BASE_URL}`} class="regular-btn focus-visible-ring !min-w-fit">
       {$_('backToHomepage')}
     </a>
   </div>
