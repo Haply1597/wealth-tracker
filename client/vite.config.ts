@@ -24,9 +24,10 @@ function htmlGoogleAnalyticsKeyPlugin(mode: string): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // 飞牛统一网关会把应用挂在 /app/wealth-tracker 前缀下，
-  // 用相对路径让 index.html 里的资源引用解析为 /app/wealth-tracker/assets/...
-  base: './',
+  // 飞牛统一网关把应用挂在 /app/wealth-tracker 前缀下，且会剥掉该前缀转发给后端。
+  // 用绝对前缀保证资源请求路径恒为 /app/wealth-tracker/assets/...，
+  // 网关剥前缀后后端收到 /assets/... 能正常服务，避免相对路径解析漂移到 /app/assets/。
+  base: '/app/wealth-tracker/',
   plugins: [
     htmlGoogleAnalyticsKeyPlugin(mode),
     svelte(),
