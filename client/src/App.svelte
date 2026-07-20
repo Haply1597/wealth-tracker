@@ -38,11 +38,19 @@
     }
   })
 
+  // 飞牛统一网关把应用挂在 /app/wealth-tracker 前缀下。
+  // routify 需要通过 urlRewrite 在浏览器 URL（带前缀）和路由器内部 URL（剥前缀）之间转换，
+  // 否则 iframe 初始 URL /app/wealth-tracker 命中 404 路由。
+  // 写法参考 routify 官方 subpath 示例。
+  const gatewayPrefix = import.meta.env.BASE_URL.replace(/\/$/, '') // '/app/wealth-tracker'
+  const urlRewrite = {
+    toExternal: (url: string) => gatewayPrefix + url,
+    toInternal: (url: string) => url.replace(new RegExp(`^${gatewayPrefix}`), ''),
+  }
+
   const router = createRouter({
     routes,
-    // 飞牛统一网关把应用挂在 /app/wealth-tracker 前缀下，routify 需要知道这段前缀，
-    // 把它当作 base 而不是路由名，否则 iframe 初始 URL /app/wealth-tracker 命中 404。
-    beforeUrl: import.meta.env.BASE_URL.replace(/\/$/, ''),
+    urlRewrite,
   })
 
   // 订阅路由变化以发送页面浏览数据
